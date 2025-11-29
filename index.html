@@ -1,126 +1,138 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Consulta de Certificados - PEI</title>
+  <meta charset="UTF-8" />
+  <title>Verificación de Certificado | PEI</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #f3f4f2;
       margin: 0;
       padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 22px;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
+      width: 420px;
       text-align: center;
     }
 
-    .container {
-      max-width: 450px;
-      margin: 50px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #000;
     }
 
-    h2 {
-      color: #b30086;
+    p {
+      color: #444;
+      font-size: 14px;
+      margin-bottom: 25px;
     }
 
     input {
       width: 90%;
       padding: 12px;
-      margin-top: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      border: 1.5px solid #ddd;
+      font-size: 15px;
+      margin-bottom: 20px;
     }
 
     .btn {
-      margin-top: 15px;
-      padding: 12px 20px;
-      background: #b30086;
+      width: 95%;
+      padding: 14px;
+      background: #d4af37;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      width: 95%;
     }
 
     .btn:hover {
-      background: #8a006a;
+      background: #b9962e;
     }
 
-    #resultado {
-      margin-top: 20px;
+    .resultado-box {
+      margin-top: 30px;
       text-align: left;
+      background: #fff8db;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 5px solid #d4af37;
     }
 
-    .cert-box {
-      background: #ffe6f7;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-
-    .link-btn {
+    .link-cert {
       display: inline-block;
-      background: #4CAF50;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #d4af37;
       color: white;
-      padding: 10px 16px;
-      border-radius: 6px;
       text-decoration: none;
-      margin-top: 10px;
+      border-radius: 8px;
+      font-weight: bold;
     }
 
-    .link-btn:hover {
-      background: #3e8e41;
+    .link-cert:hover {
+      background: #b9962e;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h2>Consulta tu Certificado</h2>
+  <div class="card">
+    <h2>Verificación de Certificado</h2>
+    <p>Ingrese su DNI para comprobar su certificado</p>
 
-    <input type="text" id="dni" placeholder="Ingresa tu DNI">
+    <input type="text" id="dni" placeholder="Ej: 12345678" />
     <button class="btn" onclick="buscar()">Buscar</button>
 
     <div id="resultado"></div>
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxmlR4B35tB_hyi-jbQbBTlKr1idA_5J8s1AnecndnnEVfKwoJOoULKbCT5N1Gm4NSzWQ/exec";
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbxmlR4B35tB_hyi-jbQbBTlKr1idA_5J8s1AnecndnnEVfKwoJOoULKbCT5N1Gm4NSzWQ/exec";
 
     function buscar() {
       const dni = document.getElementById("dni").value;
       const salida = document.getElementById("resultado");
-      salida.innerHTML = "Buscando...";
+      salida.innerHTML = "<p>Buscando...</p>";
 
       fetch(`${API_URL}?dni=${dni}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data.found) {
             salida.innerHTML = `
-              <div class="cert-box">
-                <h3>✅ Certificado encontrado</h3>
-                <p><strong>Nombre:</strong> ${data.nombre}</p>
-                <p><strong>Curso:</strong> ${data.curso}</p>
-                <p><strong>Fecha:</strong> ${data.fecha ?? "No registrada"}</p>
-                <a class="link-btn" href="${data.certificado}" target="_blank">Ver certificado aquí</a>
-              </div>
-            `;
+            <div class="resultado-box">
+              <h3>✔ Certificado encontrado</h3>
+              <p><strong>Nombre:</strong> ${data.nombre}</p>
+              <p><strong>Curso:</strong> ${data.curso}</p>
+              <p><strong>Fecha:</strong> ${data.fecha ?? "No registrada"}</p>
+              <a class="link-cert" href="${data.certificado}" target="_blank">Ver Certificado</a>
+            </div>`;
           } else {
-            salida.innerHTML = "<h3>❌ No se encontró ningún certificado con ese DNI.</h3>";
+            salida.innerHTML = `
+              <div class="resultado-box">
+                <h3>❌ No se encontró ningún certificado con ese DNI.</h3>
+              </div>`;
           }
         })
-        .catch(err => {
-          salida.innerHTML = "Error en la consulta.";
+        .catch((err) => {
+          salida.innerHTML = "<p>Error en la consulta.</p>";
           console.error(err);
         });
     }
   </script>
-
 </body>
 </html>
