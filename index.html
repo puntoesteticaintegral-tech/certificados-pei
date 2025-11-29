@@ -1,59 +1,126 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Consulta de Certificados - PEI</title>
-<style>
-  body { font-family: Arial; margin: 30px; }
-  #resultado { margin-top: 20px; }
-  .btn {
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Consulta de Certificados - PEI</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 450px;
+      margin: 50px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #b30086;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .btn {
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #b30086;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 95%;
+    }
+
+    .btn:hover {
+      background: #8a006a;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .cert-box {
+      background: #ffe6f7;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .link-btn {
+      display: inline-block;
+      background: #4CAF50;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+
+    .link-btn:hover {
+      background: #3e8e41;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Consulta tu Certificado</h2>
+  <div class="container">
+    <h2>Consulta tu Certificado</h2>
 
-<input type="text" id="dni" placeholder="Ingresa tu DNI">
-<button class="btn" onclick="buscar()">Buscar</button>
+    <input type="text" id="dni" placeholder="Ingresa tu DNI">
+    <button class="btn" onclick="buscar()">Buscar</button>
 
-<div id="resultado"></div>
+    <div id="resultado"></div>
+  </div>
 
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwsIUhSRxW27qEi5U7IU7tFgwFuAlJDRFYkXt5U9PTSnKLUuwGYzLhwpcHJnKp1NQLMAA/exec";
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxmlR4B35tB_hyi-jbQbBTlKr1idA_5J8s1AnecndnnEVfKwoJOoULKbCT5N1Gm4NSzWQ/exec";
 
-  function buscar() {
-    const dni = document.getElementById("dni").value;
-    const salida = document.getElementById("resultado");
-    salida.innerHTML = "Buscando...";
+    function buscar() {
+      const dni = document.getElementById("dni").value;
+      const salida = document.getElementById("resultado");
+      salida.innerHTML = "Buscando...";
 
-    fetch(`${API_URL}?dni=${dni}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.found) {
-          salida.innerHTML = `
-            <h3>✅ Certificado encontrado</h3>
-            <p><strong>Nombre:</strong> ${data.nombre}</p>
-            <p><strong>Curso:</strong> ${data.curso}</p>
-            <p><strong>Fecha:</strong> ${data.fecha ?? "No registrada"}</p>
-            <a class="btn" href="${data.certificado}" target="_blank">Ver certificado aquí</a>
-          `;
-        } else {
-          salida.innerHTML = "<h3>❌ No se encontró ningún certificado con ese DNI.</h3>";
-        }
-      })
-      .catch(err => {
-        salida.innerHTML = "Error en la consulta.";
-        console.error(err);
-      });
-  }
-</script>
+      fetch(`${API_URL}?dni=${dni}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.found) {
+            salida.innerHTML = `
+              <div class="cert-box">
+                <h3>✅ Certificado encontrado</h3>
+                <p><strong>Nombre:</strong> ${data.nombre}</p>
+                <p><strong>Curso:</strong> ${data.curso}</p>
+                <p><strong>Fecha:</strong> ${data.fecha ?? "No registrada"}</p>
+                <a class="link-btn" href="${data.certificado}" target="_blank">Ver certificado aquí</a>
+              </div>
+            `;
+          } else {
+            salida.innerHTML = "<h3>❌ No se encontró ningún certificado con ese DNI.</h3>";
+          }
+        })
+        .catch(err => {
+          salida.innerHTML = "Error en la consulta.";
+          console.error(err);
+        });
+    }
+  </script>
 
 </body>
 </html>
