@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Certificación - Punto Estética Integral</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: Inter, sans-serif;
+  background: #FAFAF8;
+  margin: 0;
+  padding: 40px 20px;
+  color: #3F5343;
+}
+
+.contenedor {
+  max-width: 450px;
+  margin: 0 auto;
+  background: #FFFFFF;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border: 1px solid #E7E3D0;
+}
+
+/* Título Premium */
+h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #3F5343;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.texto-explicacion {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 22px;
+  color: #3F5343;
+}
+
+/* Input */
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #CFCFCF;
+  font-size: 16px;
+  margin-bottom: 18px;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: #D9B24C;
+  outline: none;
+  box-shadow: 0 0 6px rgba(217,178,76,0.3);
+}
+
+/* BOTÓN DORADO PREMIUM */
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #D9B24C, #C89E39);
+  border: none;
+  border-radius: 8px;
+  color: #3F5343;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Resultado */
+.resultado {
+  margin-top: 25px;
+  padding: 18px;
+  border-radius: 10px;
+  background: #F7F4EB;
+  border-left: 4px solid #D9B24C;
+  display: none;
+}
+
+.ok {
+  color: #547B5B;
+  font-weight: 600;
+}
+
+.error {
+  color: #B23A48;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+  <h2>Consulta tu Certificación</h2>
+  <p class="texto-explicacion">
+    Ingresá tu DNI para verificar y descargar tu certificado.
+  </p>
+
+  <input type="text" id="dni" placeholder="Ingresá tu DNI">
+  <button onclick="buscarCertificado()">Buscar Certificado</button>
+
+  <div id="resultado" class="resultado"></div>
+</div>
+
+<script>
+// 🔗 URL de tu WebApp:
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxJ4AlZZHHuPt4mKIcIQvX4pogrTWlkZb_5Jn9aipF1lldwPmYYM7d1GjrYF6G9AT6mxA/exec";
+
+function buscarCertificado() {
+  const dni = document.getElementById("dni").value.trim();
+  const output = document.getElementById("resultado");
+
+  if (dni === "") {
+    output.style.display = "block";
+    output.innerHTML = `<span class="error">Por favor ingresá un DNI válido.</span>`;
+    return;
+  }
+
+  output.style.display = "block";
+  output.innerHTML = "Buscando información...";
+
+  fetch(WEBAPP_URL + "?dni=" + dni)
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) {
+        output.innerHTML = `<span class="error">${data.error}</span>`;
+      } else {
+        output.innerHTML = `
+          <span class="ok">✔ Certificado encontrado</span><br><br>
+          <strong>Nombre:</strong> ${data.nombre}<br>
+          <strong>Curso:</strong> ${data.curso}<br><br>
+          <a href="${data.certificado}" target="_blank" style="
+            display:inline-block; 
+            margin-top:10px; 
+            padding:10px 14px; 
+            background:#D9B24C; 
+            color:#3F5343; 
+            font-weight:600;
+            border-radius:8px;
+            text-decoration:none;
+          ">Descargar Certificado</a>
+        `;
+      }
+    })
+    .catch(e => {
+      output.innerHTML = `<span class="error">Error al conectar con el servidor.</span>`;
+    });
+}
+</script>
+
+</body>
+</html>
